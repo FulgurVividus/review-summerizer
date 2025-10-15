@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import OpenAI from "openai";
 import { conversationRepository } from "../repositories/conversation.repository";
 import template from "../prompts/chatbot.txt";
 import { llmClient } from "../llm/client";
