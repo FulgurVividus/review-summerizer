@@ -11,7 +11,7 @@ export const reviewRepository = {
       take: limit,
     });
   },
-
+  //
   storeReviewSummary(productId: number, summary: string) {
     const now = new Date();
     const expiresAt = dayjs().add(7, "days").toDate();
@@ -23,10 +23,16 @@ export const reviewRepository = {
       productId: productId,
     };
 
-    return prisma.review.upsert({
+    return prisma.summary.upsert({
       where: { productId },
       create: data,
       update: data,
+    });
+  },
+  //
+  getReviewSummary(productId: number) {
+    return prisma.summary.findUnique({
+      where: { productId },
     });
   },
 };

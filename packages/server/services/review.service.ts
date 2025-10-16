@@ -7,8 +7,14 @@ export const reviewService = {
   async getReviews(productId: number): Promise<Review[]> {
     return reviewRepository.getReviews(productId);
   },
-
+  //
   async summarizeReviews(productId: number): Promise<string> {
+    const existingSummary = await reviewRepository.getReviewSummary(productId);
+
+    if (existingSummary && existingSummary.expiresAt > new Date()) {
+      return existingSummary.content;
+    }
+
     // get the last 10 reviews
     const reviews = await reviewRepository.getReviews(productId, 10);
     const joinedReviews = reviews.map((r) => r.content).join("\n\n");
