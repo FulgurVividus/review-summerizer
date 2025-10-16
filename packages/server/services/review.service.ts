@@ -23,6 +23,9 @@ export const reviewService = {
       maxTokens: 500,
     });
 
-    return response.text;
+    const summary = response.text;
+    await reviewRepository.storeReviewSummary(productId, summary);
+
+    return summary;
   },
 };
