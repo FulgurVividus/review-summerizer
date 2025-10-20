@@ -4,6 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import StarRating from "./StarRating";
 import { Button } from "../ui/button";
 import { HiSparkles } from "react-icons/hi2";
+import { useState } from "react";
 
 type Props = {
   productId: number;
@@ -22,7 +23,13 @@ type GetReviewsResponse = {
   reviews: Review[];
 };
 
+type SummarizeResponse = {
+  summary: string;
+};
+
 const ReviewList = ({ productId }: Props) => {
+  const [summary, setSummary] = useState<string>("");
+
   const {
     data: reviewData,
     isLoading,
@@ -31,6 +38,13 @@ const ReviewList = ({ productId }: Props) => {
     queryKey: ["reviews", productId],
     queryFn: () => fetchReviews(),
   });
+
+  const handleSummarize = async () => {
+    const { data } = await axios.post<SummarizeResponse>(
+      `/api/products/${productId}/reviews/summarize`
+    );
+    setSummary(data.summary);
+  };
 
   async function fetchReviews() {
     const { data } = await axios.get<GetReviewsResponse>(
@@ -63,13 +77,15 @@ const ReviewList = ({ productId }: Props) => {
     return null;
   }
 
+  const currentSummary: string | null = reviewData.summary || summary;
+
   return (
     <div>
       <div className="mb-5">
-        {reviewData?.summary ? (
-          <p>{reviewData.summary}</p>
+        {currentSummary ? (
+          <p>{currentSummary}</p>
         ) : (
-          <Button type="button">
+          <Button type="button" onClick={handleSummarize}>
             <HiSparkles /> Summarize
           </Button>
         )}
